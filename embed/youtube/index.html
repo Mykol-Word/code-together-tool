@@ -35,6 +35,8 @@
 		const volume = clamp(parseNumber(query.get("volume") || query.get("voluem"), 20), 0, 100);
 		const start_time = Math.max(0, Math.floor(parseNumber(query.get("startTime"), 0)));
 
+		let player = null;
+
 		if (!video_id)
 		{
 			document.body.innerHTML = '<div class="message">missing videoId</div>';
@@ -44,11 +46,12 @@
 			const tag = document.createElement("script");
 			tag.src = "https://www.youtube.com/iframe_api";
 			document.head.appendChild(tag);
+			setInterval(reportTime, 1000);
 		}
 
 		function onYouTubeIframeAPIReady()
 		{
-			new YT.Player("player", {
+			player = new YT.Player("player", {
 				width: "100%",
 				height: "100%",
 				videoId: video_id,
@@ -71,6 +74,24 @@
 					}
 				}
 			});
+		}
+
+		// smuggle "currentSeconds/totalSeconds" to the host through the page title, since the web surface exposes no other read channel
+		function reportTime()
+		{
+			if (!player || !player.getCurrentTime || !player.getDuration)
+			{
+				return;
+			}
+
+			const current = Math.floor(player.getCurrentTime() || 0);
+			const total = Math.floor(player.getDuration() || 0);
+			const title = current + "/" + total;
+
+			if (document.title !== title)
+			{
+				document.title = title;
+			}
 		}
 
 		function parseNumber(value, fallback)
