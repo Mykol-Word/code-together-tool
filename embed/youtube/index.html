@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Code Together YouTube Embed</title>
+	<style>
+		html,
+		body,
+		#player
+		{
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			background: #000;
+			overflow: hidden;
+		}
+
+		.message
+		{
+			height: 100%;
+			display: grid;
+			place-items: center;
+			color: #fff;
+			font: 16px system-ui, sans-serif;
+		}
+	</style>
+</head>
+<body>
+	<div id="player"></div>
+
+	<script>
+		const query = new URLSearchParams(location.search);
+		const video_id = query.get("videoId") || query.get("videoID") || query.get("v");
+		const volume = clamp(parseNumber(query.get("volume") || query.get("voluem"), 100), 0, 100);
+		const start_time = Math.max(0, Math.floor(parseNumber(query.get("startTime"), 0)));
+
+		if (!video_id)
+		{
+			document.body.innerHTML = '<div class="message">missing videoId</div>';
+		}
+		else
+		{
+			const tag = document.createElement("script");
+			tag.src = "https://www.youtube.com/iframe_api";
+			document.head.appendChild(tag);
+		}
+
+		function onYouTubeIframeAPIReady()
+		{
+			new YT.Player("player", {
+				width: "100%",
+				height: "100%",
+				videoId: video_id,
+				playerVars: {
+					autoplay: 1,
+					controls: 1,
+					playsinline: 1,
+					rel: 0,
+					start: start_time
+				},
+				events: {
+					onReady: event =>
+					{
+						event.target.setVolume(volume);
+
+						if (volume <= 0)
+						{
+							event.target.mute();
+						}
+					}
+				}
+			});
+		}
+
+		function parseNumber(value, fallback)
+		{
+			const number = Number(value);
+			return Number.isFinite(number) ? number : fallback;
+		}
+
+		function clamp(value, min, max)
+		{
+			return Math.min(max, Math.max(min, value));
+		}
+	</script>
+</body>
+</html>
