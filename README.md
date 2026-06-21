@@ -5,7 +5,7 @@ A tiny GitHub Pages site for embedding YouTube videos in Code Together.
 ## Usage
 
 ```
-https://code-together-tool/embed/youtube/?videoId=ucRulNQsuYQ&volume=60&startTime=12
+https://mykol-word.github.io/code-together-tool/embed/youtube/?videoId=ucRulNQsuYQ&volume=60&startTime=12
 ```
 
 ## Parameters
