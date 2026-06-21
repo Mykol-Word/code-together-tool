@@ -32,7 +32,7 @@
 	<script>
 		const query = new URLSearchParams(location.search);
 		const video_id = query.get("videoId") || query.get("videoID") || query.get("v");
-		const volume = clamp(parseNumber(query.get("volume") || query.get("voluem"), 100), 0, 100);
+		const volume = clamp(parseNumber(query.get("volume") || query.get("voluem"), 20), 0, 100);
 		const start_time = Math.max(0, Math.floor(parseNumber(query.get("startTime"), 0)));
 
 		if (!video_id)
